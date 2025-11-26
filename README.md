@@ -72,6 +72,7 @@
 - ⚡ **AI Performance Optimization**: Smart caching for LLM queries and embeddings for lightning-fast responses
 - 🔐 **Enterprise-Grade Security**: Username/password authentication with role-based access control (Admin/Customer)
 - 👥 **User Management System**: Complete user administration - create users, manage roles, reset passwords, delete users
+- 🔀 **Flexible Answer Modes**: Toggle between RAG mode (uses uploaded documents for context-aware answers) or Direct LLM mode (uses LLM's general knowledge for faster, generic answers)
 
 ### Advanced AI Features
 
@@ -80,6 +81,32 @@
 - **🔍 AI Query Expansion**: Automatically enhance queries with AI-generated related terms
 - **💾 Smart Embedding Cache**: AI-powered caching to avoid recomputing document embeddings
 - **⚡ Intelligent Query Cache**: Cache LLM responses for instant repeated queries
+
+---
+
+## 📸 Screenshots
+
+### Customer Portal - Home Page:
+![Customer Home](documentation/Screenshot%20-%20Customer%20Portal%20-%20Home.png "Customer Portal Home Page")
+
+### Customer Portal - Chat Interface (Internal Docs Mode):
+![Customer Chat - RAG Mode](documentation/Screenshot%20-%20Customer%20Portal%20-%20Chat%20-%20Internal%20Docs.png "Customer Portal Chat - Using Internal Documents")
+
+### Customer Portal - Chat Interface (Only LLM Mode):
+![Customer Chat - Direct LLM](documentation/Screenshot%20-%20Customer%20Portal%20-%20Chat%20-%20Only%20LLM.png "Customer Portal Chat - Using Direct LLM")
+
+### Admin Portal - Login Page:
+![Admin Login](documentation/Screenshot%20-%20Admin%20Portal%20-%20Login.png "Admin Portal Login Page")
+
+### Admin Portal - Dashboard:
+![Admin Dashboard](documentation/Screenshot%20-%20Admin%20Portal%20-%20Home.png "Admin Portal Dashboard")
+
+The Admin Portal provides comprehensive document management and system administration:
+- **User Management**: Create, manage, and delete user accounts with role-based access control
+- **Document Upload**: Drag-and-drop interface for uploading multiple document formats
+- **System Statistics**: Real-time metrics on total documents and chunks in the knowledge base
+- **ChromaDB Contents**: Browse and inspect all vector embeddings and document chunks
+- **Knowledge Base Management**: Reset and manage the entire knowledge base
 
 ---
 
@@ -224,7 +251,16 @@ The system uses `config/.env` for all AI and LLM settings. The install script au
    - Get instant AI-powered answers with intelligent source citations
    - View AI-matched document chunks with relevance scores
 
-2. **🎯 Advanced AI Options**:
+2. **🔀 Answer Source Toggle**:
+   - **📚 Internal Docs Mode** (Default): Uses your uploaded documents for context-aware, accurate answers based on your knowledge base
+     - Better context and accuracy
+     - Slightly slower due to document retrieval
+   - **🤖 Only LLM Mode**: Uses LLM's general knowledge directly without document retrieval
+     - Faster responses
+     - Generic answers from LLM training data
+   - Toggle between modes using the radio buttons above the query input
+
+3. **🎯 Advanced AI Options**:
    - Bypass cache for fresh LLM-generated responses
    - View AI similarity scores and confidence levels
    - Explore source documents used by the AI

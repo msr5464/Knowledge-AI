@@ -76,8 +76,8 @@ except ImportError:
 class BaseRAG:
     """Base RAG class with common functionality."""
     
-    def __init__(self, use_local_embeddings: bool = True, show_matching_scores: bool = False, 
-                 show_chromadb_data: bool = False, show_matching_sources: bool = True,
+    def __init__(self, use_local_embeddings: bool = True, 
+                 show_matching_sources: bool = True,
                  min_similarity_threshold: float = 30.0,
                  chunk_size: int = 1000, chunk_overlap: int = 200, retrieval_k: int = 3,
                  enable_memory: bool = False, memory_type: str = 'buffer',
@@ -93,8 +93,6 @@ class BaseRAG:
         
         Args:
             use_local_embeddings: Use local HuggingFace embeddings instead of OpenAI
-            show_matching_scores: If True, print similarity scores for retrieved documents
-            show_chromadb_data: If True, allow ChromaDB inspection to be displayed
             show_matching_sources: If True, print matching sources after each query
             min_similarity_threshold: Minimum similarity percentage (0-100) to include a source
             chunk_size: Size of text chunks for splitting documents
@@ -131,8 +129,6 @@ class BaseRAG:
                 if isinstance(config, RAGConfig):
                     config_dict = config.to_dict()
                     use_local_embeddings = config_dict.get('use_local_embeddings', use_local_embeddings)
-                    show_matching_scores = config_dict.get('show_matching_scores', show_matching_scores)
-                    show_chromadb_data = config_dict.get('show_chromadb_data', show_chromadb_data)
                     show_matching_sources = config_dict.get('show_matching_sources', show_matching_sources)
                     min_similarity_threshold = config_dict.get('min_similarity_threshold', min_similarity_threshold)
                     chunk_size = config_dict.get('chunk_size', chunk_size)
@@ -155,8 +151,6 @@ class BaseRAG:
             except ImportError:
                 pass  # If config module not available, use individual parameters
         
-        self.show_matching_scores = show_matching_scores
-        self.show_chromadb_data = show_chromadb_data
         self.show_matching_sources = show_matching_sources
         self.min_similarity_threshold = min_similarity_threshold
         self.retrieval_k = retrieval_k
@@ -606,7 +600,7 @@ class BaseRAG:
         docs = final_docs
         initial_count = len(docs)
         
-        needs_scores = self.min_similarity_threshold > 0.0 or self.show_matching_scores
+        needs_scores = self.min_similarity_threshold > 0.0
         sources_with_scores = []
         filtered_docs = []
         sources_above_threshold = 0
@@ -614,22 +608,6 @@ class BaseRAG:
         if needs_scores:
             docs_with_scores = self.vectorstore.similarity_search_with_score(question, k=len(docs))
             score_map = {doc.page_content: (doc, score) for doc, score in docs_with_scores}
-            
-            if self.show_matching_scores:
-                print("\n📊 Matching Scores:")
-                print("-" * 60)
-                for i, doc in enumerate(docs, 1):
-                    doc_with_score = score_map.get(doc.page_content)
-                    if doc_with_score:
-                        original_doc, distance = doc_with_score
-                        similarity, similarity_percent = calculate_similarity(distance)
-                        content_preview = doc.page_content[:150]
-                        print(f"[{i}] Similarity: {similarity_percent:.2f}% (Distance: {distance:.4f})")
-                        print(f"    Content: {content_preview}...")
-                    else:
-                        content_preview = doc.page_content[:150]
-                        print(f"[{i}] Similarity: N/A")
-                        print(f"    Content: {content_preview}...")
             
             for i, doc in enumerate(docs, 1):
                 doc_with_score = score_map.get(doc.page_content)
@@ -769,8 +747,10 @@ class BaseRAG:
         if self.show_matching_sources:
             print("\n📚 Sources:")
             print("-" * 60)
+            # Show all retrieved sources, not just cited ones
+            sources_to_show = cited_source_numbers if cited_source_numbers else set(range(1, len(docs) + 1))
             for i, doc in enumerate(docs, 1):
-                if i in cited_source_numbers:
+                if i in sources_to_show:
                     content_preview = doc.page_content[:100]
                     print(f"[Source {i}] {content_preview}...")
         
@@ -779,10 +759,32 @@ class BaseRAG:
             sources_with_scores[i-1] for i in cited_source_numbers if i <= len(sources_with_scores)
         ]
         
-        result = {
-            "answer": answer,
-            "sources": cited_sources_with_scores,
-            "source_documents": [
+        # When show_matching_sources is True, include all retrieved sources in response
+        # Otherwise, only include cited sources
+        if self.show_matching_sources:
+            # Include all retrieved sources
+            all_sources_with_scores = sources_with_scores if sources_with_scores else [
+                {
+                    "content": doc.page_content[:150],
+                    "similarity": None,
+                    "similarity_percent": None,
+                    "distance": None,
+                    "doc_id": doc.metadata.get('id', '') if doc.metadata else ''
+                }
+                for doc in docs
+            ]
+            all_source_documents = [
+                {
+                    "source_id": i,
+                    "content": doc.page_content,
+                    "metadata": doc.metadata if doc.metadata else {}
+                }
+                for i, doc in enumerate(docs, 1)
+            ]
+        else:
+            # Only include cited sources
+            all_sources_with_scores = cited_sources_with_scores
+            all_source_documents = [
                 {
                     "source_id": i,
                     "content": doc.page_content,
@@ -790,7 +792,12 @@ class BaseRAG:
                 }
                 for i, doc in enumerate(docs, 1)
                 if i in cited_source_numbers
-            ],
+            ]
+        
+        result = {
+            "answer": answer,
+            "sources": all_sources_with_scores,
+            "source_documents": all_source_documents,
             "all_retrieved_documents": len(docs)
         }
         
@@ -835,7 +842,7 @@ class BaseRAG:
     def inspect_chromadb(self):
         """Inspect ChromaDB contents."""
         ChromaDBHelper = import_chromadb_helper()
-        ChromaDBHelper.inspect_collection(self.vectorstore, self.show_chromadb_data)
+        ChromaDBHelper.inspect_collection(self.vectorstore, show_data=True)
     
     def get_chromadb_data(self) -> dict:
         """Get ChromaDB data as dictionary."""

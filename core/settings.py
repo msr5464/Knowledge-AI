@@ -29,16 +29,8 @@ class RAGConfig(BaseSettings):
     )
     
     # Display settings
-    show_matching_scores: bool = Field(
-        default=False,
-        description="Show similarity scores in output"
-    )
-    show_chromadb_data: bool = Field(
-        default=False,
-        description="Allow ChromaDB inspection to be displayed"
-    )
     show_matching_sources: bool = Field(
-        default=True,
+        default=False,
         description="Show matching sources after each query"
     )
     

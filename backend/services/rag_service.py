@@ -212,29 +212,78 @@ class RAGService:
                 'message': f'Failed to process document {file_name}'
             }
     
-    def query(self, question: str, session_id: Optional[str] = None, bypass_cache: bool = False) -> Dict[str, Any]:
+    def query(self, question: str, session_id: Optional[str] = None, bypass_cache: bool = False, use_rag: bool = True) -> Dict[str, Any]:
         """
-        Query the RAG system.
+        Query the RAG system or LLM directly.
         
         Args:
             question: User question
             session_id: Optional session ID for conversation context
             bypass_cache: If True, skip cache and force fresh LLM query
+            use_rag: If True, use RAG with documents; If False, query LLM directly
             
         Returns:
             Query result
         """
         try:
-            result = self.rag.query(question, bypass_cache=bypass_cache)
-            
-            return {
-                'success': True,
-                'answer': result.get('answer', ''),
-                'sources': result.get('sources', []),
-                'source_documents': result.get('source_documents', []),
-                'query_time_ms': result.get('query_time_ms', 0),
-                'cache_hit': result.get('cache_hit', False)
-            }
+            if use_rag:
+                result = self.rag.query(question, bypass_cache=bypass_cache)
+                
+                return {
+                    'success': True,
+                    'answer': result.get('answer', ''),
+                    'sources': result.get('sources', []),
+                    'source_documents': result.get('source_documents', []),
+                    'query_time_ms': result.get('query_time_ms', 0),
+                    'cache_hit': result.get('cache_hit', False),
+                    'mode': 'rag'
+                }
+            else:
+                # Direct LLM query without RAG
+                import time
+                start_time = time.time()
+                
+                from langchain_core.prompts import ChatPromptTemplate
+                from core.rag_helpers import extract_answer_from_llm_result
+                
+                # Direct LLM system message (no context)
+                DIRECT_LLM_MESSAGE = """You are a helpful AI assistant. Answer questions directly and clearly based on your knowledge.
+
+Instructions:
+- Provide direct, clear, and accurate answers
+- Use markdown formatting for better readability
+- Format lists using numbered lists (1., 2., 3.) or bullet points
+- Be concise but thorough
+- If you don't know something, say so directly without disclaimers"""
+                
+                llm = self.rag.llm
+                if not llm:
+                    return {
+                        'success': False,
+                        'error': 'LLM not available',
+                        'message': 'LLM is not configured'
+                    }
+                
+                prompt = ChatPromptTemplate.from_messages([
+                    ("system", DIRECT_LLM_MESSAGE),
+                    ("human", "{question}")
+                ])
+                
+                chain = prompt | llm
+                result = chain.invoke({"question": question})
+                answer = extract_answer_from_llm_result(result)
+                
+                query_time_ms = int((time.time() - start_time) * 1000)
+                
+                return {
+                    'success': True,
+                    'answer': answer,
+                    'sources': [],
+                    'source_documents': [],
+                    'query_time_ms': query_time_ms,
+                    'cache_hit': False,
+                    'mode': 'direct_llm'
+                }
         except Exception as e:
             return {
                 'success': False,

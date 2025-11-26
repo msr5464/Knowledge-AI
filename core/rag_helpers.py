@@ -170,10 +170,12 @@ RAG_SYSTEM_MESSAGE = """You are a helpful assistant that answers questions based
 
 Instructions:
 - Read the context carefully and extract relevant information from ALL provided sources
-- Answer the question based ONLY on the information provided in the context
-- If the information is in the context, provide a detailed and accurate answer
+- Answer the question directly and confidently based on the information in the context
 - Do NOT include source citations like [Source 1] or [Source 2] in your answer - just provide the answer directly
-- If the answer is not in the context or cannot be determined from the context, explicitly say "The information is not available in the provided context"
+- Do NOT use disclaimers like "The information is not available in the provided context" or "I was unable to find"
+- If information is partially available, provide what you can determine directly without disclaimers
+- If you can infer or deduce information from the context, provide that answer directly
+- Be direct and clear-cut - avoid being overly cautious or politically correct
 - Be thorough and extract all relevant details from the context
 - For questions asking for lists (like "what are..."), provide a complete list from all sources
 - If this is a follow-up question, use the conversation history to understand the context
@@ -190,22 +192,9 @@ FORMATTING REQUIREMENTS:
   * Use proper spacing - add a blank line before and after lists
 - For test cases or structured data, format each item on a new line with proper indentation
 - Ensure readability with clear separation between items
-- Do NOT run everything together in a single paragraph - break it into logical sections
-
-Example of good formatting:
-## Test Cases for Creating Nium Cards
-
-1. **Create 6 cards from budget in 1 min**
-   - Test case ID: C134109
-   - Description: Verify that 6 Nium cards can be created within a minute.
-
-2. **Create more than 31 Virtual cards in 1hr**
-   - Test case ID: C134111
-   - Description: Verify that more than 31 virtual Nium cards can be created within an hour.
-
-3. **Create 5 master cards in 1 min**
-   - Test case ID: C134116
-   - Description: Verify that 5 master Nium cards can be created within a minute."""
+- Do NOT run everything together in a single paragraph - break it into logical sections and format it properly into multiple lines
+- If formatting is passed by user, follow the formatting instructions strictly.
+"""
 
 
 def extract_answer_from_llm_result(result: Any) -> str:
@@ -255,15 +244,11 @@ def extract_cited_sources(answer: str) -> set:
         answer: Answer text containing source citations like [Source 1], [Source 2]
     
     Returns:
-        Set of cited source numbers (1-indexed)
+        Set of cited source numbers (1-indexed). Empty set if no citations found.
     """
     source_pattern = r'\[Source\s+(\d+)\]'
     matches = re.findall(source_pattern, answer, re.IGNORECASE)
     cited_source_numbers = {int(num) for num in matches}
-    
-    # If no sources cited, default to source 1
-    if not cited_source_numbers:
-        cited_source_numbers = {1}
     
     return cited_source_numbers
 

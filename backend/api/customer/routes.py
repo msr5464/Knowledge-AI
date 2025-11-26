@@ -22,6 +22,7 @@ def query():
     question = data['question']
     session_id = data.get('session_id')
     bypass_cache = data.get('bypass_cache', False)  # Default to False if not provided
+    use_rag = data.get('use_rag', True)  # Default to True (use RAG with documents)
     
     if not question or not question.strip():
         return jsonify({
@@ -33,7 +34,7 @@ def query():
     rag_service = current_app.config['RAG_SERVICE']
     
     # Process query
-    result = rag_service.query(question, session_id, bypass_cache=bypass_cache)
+    result = rag_service.query(question, session_id, bypass_cache=bypass_cache, use_rag=use_rag)
     
     if result['success']:
         return jsonify(result), 200
