@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - InHouse Knowledge AI Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .logo-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+        
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        #forgotPasswordModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #forgotPasswordModal.show {
+            display: flex !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="https://raw.githubusercontent.com/msr5464/Basic-Automation-Framework/refs/heads/master/ThanosLogo.png" alt="Thanos Logo" class="logo">
+            <h1>Admin Login</h1>
+            <p class="subtitle">InHouse Knowledge AI</p>
+        </div>
+        
+        <div class="error-message" id="errorMessage"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+            
+            <button type="submit" class="btn" id="loginBtn">Login</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="#" onclick="showForgotPassword(); return false;" style="color: #667eea; text-decoration: none; font-size: 14px;">
+                Forgot Password?
+            </a>
+        </div>
+        
+        <!-- Forgot Password Modal -->
+        <div id="forgotPasswordModal">
+            <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; margin: 20px; max-height: 90vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0; color: #667eea;">Password Recovery Options</h2>
+                    <button onclick="hideForgotPassword()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">&times;</button>
+                </div>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-left: 4px solid #667eea; border-radius: 4px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Option 1: Contact Another Admin</h3>
+                    <p style="color: #666; line-height: 1.6;">
+                        If there are other admin users in the system, contact them to reset your password. 
+                        They can access the User Management section in the admin panel to reset your password.
+                    </p>
+                </div>
+                
+                <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-left: 4px solid #667eea; border-radius: 4px;">
+                    <h3 style="color: #333; margin-bottom: 10px;">Option 2: Manual Reset</h3>
+                    <div style="margin-bottom: 15px; padding: 12px; background: #f8d7da; border-radius: 4px; border-left: 4px solid #dc3545;">
+                        <strong style="color: #721c24;">⚠️ WARNING:</strong>
+                            This will <strong>DELETE ALL EXISTING USERS</strong> including all admin and customer accounts. 
+                            Only use this option if you are the only admin and have no other way to recover access.
+                    </div>
+                    <p style="color: #666; line-height: 1.6; margin-bottom: 10px;">
+                        Manually reset by deleting the user database file:
+                    </p>
+                    <ol style="color: #666; line-height: 1.8; padding-left: 20px;">
+                        <li>Stop the server</li>
+                        <li>Delete the file: <code style="background: #e9ecef; padding: 2px 6px; border-radius: 3px;">storage/users.json</code></li>
+                        <li>Restart the server</li>
+                        <li>A new default admin user will be created automatically</li>
+                    </ol>
+                    <div style="margin-top: 15px; padding: 10px; background: #fff3cd; border-radius: 4px; border-left: 4px solid #ffc107;">
+                        <strong style="color: #856404;">⚠️ Default Credentials After Reset:</strong><br>
+                        <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">Username: admin</code><br>
+                        <code style="background: #fff; padding: 2px 6px; border-radius: 3px;">Password: admin123</code><br>
+                        <small style="color: #856404;">Change this password immediately after login!</small>
+                    </div>
+                </div>
+                
+                <button onclick="hideForgotPassword()" class="btn" style="width: 100%;">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/auth';
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        // Check if already logged in
+        checkAuth();
+        
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_BASE}/me`, {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    // Already logged in, redirect to admin panel
+                    window.location.href = '/admin';
+                }
+            } catch (error) {
+                // Not logged in, stay on login page
+            }
+        }
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Clear previous errors
+            errorMessage.classList.remove('show');
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Login successful, redirect to admin panel
+                    window.location.href = '/admin';
+                } else {
+                    // Show error
+                    errorMessage.textContent = data.error || 'Login failed';
+                    errorMessage.classList.add('show');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Login';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Network error. Please try again.';
+                errorMessage.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        });
+        
+        function showForgotPassword() {
+            const modal = document.getElementById('forgotPasswordModal');
+            modal.classList.add('show');
+        }
+        
+        function hideForgotPassword() {
+            const modal = document.getElementById('forgotPasswordModal');
+            modal.classList.remove('show');
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (modal) {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === modal) {
+                        hideForgotPassword();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,1408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InHouse Knowledge AI</title>
+    <!-- Marked.js for markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
+            padding: 0;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 36px 36px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 0;
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 400;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .attribution-text {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 1px dashed rgba(102, 126, 234, 0.2);
+            line-height: 1.5;
+            font-style: italic;
+        }
+        
+        .attribution-text a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            font-style: normal;
+            transition: color 0.2s ease;
+        }
+        
+        .attribution-text a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+        
+        .content-wrapper {
+            padding: 36px;
+            position: relative;
+            min-height: calc(100vh - 200px);
+            padding-bottom: 126px;
+        }
+        
+        .query-section {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 0;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 10000;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        
+        .query-section .input-group {
+            max-width: 100%;
+        }
+        
+        .content-wrapper {
+            padding-bottom: 126px;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 0;
+            background: white;
+            border-radius: 16px;
+            padding: 8px;
+            box-shadow: 
+                0 4px 20px rgba(102, 126, 234, 0.15),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .input-group:focus-within {
+            box-shadow: 
+                0 8px 30px rgba(102, 126, 234, 0.25),
+                0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 18px 20px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            background: transparent;
+            color: #333;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="text"]::placeholder {
+            color: #999;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px 36px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .btn:disabled::before {
+            display: none;
+        }
+        
+        .chat-history {
+            margin-bottom: 20px;
+            max-height: calc(100vh - 300px);
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .chat-history::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .chat-history::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .chat-history::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        .chat-message {
+            margin-bottom: 14px;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        .message-question {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 14px;
+            border-radius: 14px 14px 4px 14px;
+            margin-bottom: 8px;
+            margin-left: auto;
+            max-width: 85%;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        
+        .message-answer {
+            background: white;
+            border-radius: 14px 14px 14px 4px;
+            padding: 12px 16px;
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            max-width: 85%;
+            margin-right: auto;
+        }
+        
+        .message-answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .message-answer-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .message-answer-meta {
+            font-size: 11px;
+            color: #666;
+        }
+        
+        .message-answer-content {
+            color: #2d2d2d;
+            line-height: 1.6;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+        
+        .message-sources {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f0f0;
+        }
+        
+        .message-sources-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+        
+        .message-nothing-found {
+            text-align: center;
+            padding: 20px 16px;
+            color: #666;
+        }
+        
+        .answer-section {
+            margin-top: 30px;
+            padding: 0;
+            background: transparent;
+            border-radius: 0;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .answer-section.show {
+            display: block;
+        }
+        
+        .answer-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .answer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .answer-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .answer-meta {
+            color: #666;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+        
+        .answer-content {
+            word-wrap: break-word;
+            line-height: 1.8;
+            color: #2d2d2d;
+            font-size: 16px;
+        }
+        
+        .answer-content h1,
+        .answer-content h2,
+        .answer-content h3,
+        .answer-content h4 {
+            margin-top: 1.8em;
+            margin-bottom: 0.8em;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.3;
+        }
+        
+        .answer-content h1 {
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.4em;
+        }
+        
+        .answer-content h2 {
+            font-size: 1.5em;
+            color: #333;
+        }
+        
+        .answer-content h3 {
+            font-size: 1.2em;
+        }
+        
+        .answer-content strong {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        
+        .answer-content em {
+            font-style: italic;
+            color: #555;
+        }
+        
+        .answer-content ul,
+        .answer-content ol {
+            margin: 1.2em 0;
+            padding-left: 2.2em;
+        }
+        
+        .answer-content li {
+            margin: 0.6em 0;
+            line-height: 1.7;
+        }
+        
+        .answer-content p {
+            margin: 1.2em 0;
+        }
+        
+        .answer-content code {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            color: #667eea;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+        
+        .answer-content pre {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 1.5em 0;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        
+        .answer-content pre code {
+            background: none;
+            padding: 0;
+            color: #2d2d2d;
+            border: none;
+        }
+        
+        .answer-content blockquote {
+            border-left: 4px solid #667eea;
+            padding: 16px 20px;
+            margin: 1.5em 0;
+            color: #555;
+            font-style: italic;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, transparent 100%);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .answer-content hr {
+            border: none;
+            border-top: 2px solid #e0e0e0;
+            margin: 2.5em 0;
+        }
+        
+        .sources-section {
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .sources-title {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .source-item {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            padding: 20px;
+            margin-bottom: 12px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+        }
+        
+        .source-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .source-content {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+        
+        .source-content strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 27px 18px 22px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 14px;
+            }
+            
+            .content-wrapper {
+                padding: 27px 18px;
+                padding-bottom: 108px;
+            }
+            
+            .query-section {
+                padding: 15px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 20px);
+                max-width: calc(100% - 20px);
+            }
+            
+            .input-group {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .btn {
+                width: 100%;
+                padding: 16px;
+            }
+            
+            .answer-card {
+                padding: 24px;
+            }
+            
+            .answer-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 22px 14px 18px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .logo {
+                height: 50px;
+            }
+            
+            .content-wrapper {
+                padding: 18px 14px;
+                padding-bottom: 126px;
+            }
+            
+            .query-section {
+                padding: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: calc(100% - 10px);
+                max-width: calc(100% - 10px);
+            }
+            
+            .answer-card {
+                padding: 20px;
+            }
+        }
+        
+        .cache-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+            box-shadow: 0 2px 4px rgba(21, 87, 36, 0.1);
+            border: 1px solid rgba(21, 87, 36, 0.1);
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px 40px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 20px;
+            border: 2px dashed rgba(102, 126, 234, 0.2);
+        }
+        
+        .empty-state-icon {
+            font-size: 56px;
+            margin-bottom: 16px;
+            opacity: 0.6;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .refresh-btn:active {
+            transform: translateY(0);
+        }
+        
+        .refresh-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .toast-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: none;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.25),
+                0 0 0 2px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            z-index: 10001;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            animation: toastFlyIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            backdrop-filter: blur(20px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .toast-message:hover {
+            transform: translateX(-50%) translateY(0) scale(1.02);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 2px rgba(255, 255, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        
+        .toast-message.show {
+            display: block !important;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .toast-message.show:hover {
+            transform: translateX(-50%) translateY(0) scale(1.02);
+        }
+        
+        @keyframes toastFlyIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-150px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes toastFlyOut {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-150px) scale(0.9);
+            }
+        }
+        
+        .toast-message.info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 1px solid rgba(12, 84, 96, 0.2);
+        }
+        
+        .toast-message.warning {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            color: #856404;
+            border: 1px solid rgba(133, 100, 4, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div id="toastMessage" class="toast-message" title="Click to dismiss"></div>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/msr5464/Basic-Automation-Framework/refs/heads/master/ThanosLogo.png" alt="Thanos Logo" class="logo">
+            </div>
+            <h1>InHouse Knowledge AI</h1>
+            <p class="subtitle">🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | Ask Your Documents Anything</p>
+        </div>
+        
+        <div class="content-wrapper" id="contentWrapper">
+            <div class="chat-history" id="chatHistory" style="display: none;"></div>
+            
+            <div class="answer-section" id="answerSection">
+                <div class="answer-card">
+            <div class="answer-header">
+                        <div class="answer-title">✨ AI-Generated Answer</div>
+                <div class="answer-meta" id="answerMeta"></div>
+            </div>
+            <div class="answer-content" id="answerContent"></div>
+            
+            <div class="sources-section" id="sourcesSection" style="display: none;">
+                        <div class="sources-title">📚 Supporting Sources & References</div>
+                <div id="sourcesList"></div>
+                    </div>
+            </div>
+        </div>
+        
+        <div class="empty-state" id="emptyState">
+                <div class="empty-state-icon">🤖</div>
+                <p style="font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #667eea;">Your Intelligent Document Assistant</p>
+                <p style="color: #666; margin-bottom: 16px; font-size: 15px; line-height: 1.6; max-width: 600px; margin-left: auto; margin-right: auto;">Transform your documents into actionable insights. Ask questions naturally and receive intelligent, context-aware answers powered by advanced AI technology.</p>
+                <div style="background: rgba(102, 126, 234, 0.05); border-radius: 12px; padding: 14px; margin-top: 14px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                    <p style="color: #667eea; font-weight: 600; margin-bottom: 10px; font-size: 13px;">💡 Example Questions:</p>
+                    <ul style="color: #555; font-size: 13px; line-height: 1.7; text-align: left; list-style: none; padding-left: 0;">
+                        <li style="margin-bottom: 6px;">• "What are the test scenarios for the login functionality?"</li>
+                        <li style="margin-bottom: 6px;">• "What are the common failure patterns in the last sprint?"</li>
+                        <li style="margin-bottom: 6px;">• "Summarize the key recommendations from the test plan"</li>
+                        <li>• "What are the critical test cases I should know?"</li>
+                    </ul>
+                </div>
+                <div class="attribution-text">
+                    This <a target="_blank" href="https://github.com/msr5464/my-rag">open source</a> dashboard is created by <a target="_blank" href="https://www.linkedin.com/in/mukesh-rajput">Mukesh Rajput</a> to transform documents into an intelligent knowledge base using AI and LLM technology.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="query-section" id="querySection">
+        <div class="input-group">
+            <input type="text" id="questionInput" placeholder="💬 Ask anything about your documents in natural language...">
+            <button class="btn" id="submitBtn" onclick="submitQuery()">🤖 Get AI Answer</button>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/customer';
+        let sessionId = null;
+        let chatHistory = [];
+        
+        function openInfoModal() {
+            document.getElementById('infoModal').classList.add('show');
+        }
+        
+        function closeInfoModal(event) {
+            if (event) {
+                event.stopPropagation();
+            }
+            document.getElementById('infoModal').classList.remove('show');
+        }
+        
+        // Close modal on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeInfoModal();
+            }
+        });
+        
+        function submitQuery() {
+            const questionInput = document.getElementById('questionInput');
+            const submitBtn = document.getElementById('submitBtn');
+            const emptyState = document.getElementById('emptyState');
+            
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                showToast('🔍 Question missing? Please type your question to continue!', 'info');
+                return;
+            }
+            
+            // Store the question for potential refetch
+            lastQuestion = question;
+            
+            // Add question to chat history
+            addQuestionToHistory(question);
+            
+            // Clear input
+            questionInput.value = '';
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🤖 AI Thinking... <span class="loading"></span>';
+            
+            // Hide empty state and old answer section, show chat history
+            emptyState.style.display = 'none';
+            const oldAnswerSection = document.getElementById('answerSection');
+            oldAnswerSection.style.display = 'none';
+            const chatHistoryEl = document.getElementById('chatHistory');
+            chatHistoryEl.style.display = 'block';
+            
+            // Add loading message to chat
+            const loadingMessageId = addLoadingMessage();
+            
+            // Make API request (no bypass cache for initial query)
+            makeQueryRequest(question, false, loadingMessageId);
+        }
+        
+        function addQuestionToHistory(question) {
+            chatHistory.push({
+                type: 'question',
+                content: question,
+                timestamp: new Date()
+            });
+            renderChatHistory();
+        }
+        
+        function addLoadingMessage() {
+            const messageId = 'loading-' + Date.now();
+            chatHistory.push({
+                type: 'loading',
+                id: messageId,
+                timestamp: new Date()
+            });
+            renderChatHistory();
+            return messageId;
+        }
+        
+        function removeLoadingMessage(messageId) {
+            chatHistory = chatHistory.filter(msg => msg.id !== messageId);
+        }
+        
+        function addAnswerToHistory(answerData) {
+            // Remove loading message
+            const loadingMsg = chatHistory.find(msg => msg.type === 'loading');
+            if (loadingMsg) {
+                removeLoadingMessage(loadingMsg.id);
+            }
+            
+            chatHistory.push({
+                type: 'answer',
+                content: answerData.answer || '',
+                sources: answerData.sources || answerData.source_documents || [],
+                meta: answerData.meta || {},
+                isNothingFound: answerData.isNothingFound || false,
+                timestamp: new Date()
+            });
+            renderChatHistory();
+        }
+        
+        function renderChatHistory() {
+            const chatHistoryEl = document.getElementById('chatHistory');
+            chatHistoryEl.innerHTML = '';
+            
+            chatHistory.forEach((message, index) => {
+                if (message.type === 'question') {
+                    const questionDiv = document.createElement('div');
+                    questionDiv.className = 'chat-message';
+                    questionDiv.innerHTML = `
+                        <div class="message-question">${escapeHtml(message.content)}</div>
+                    `;
+                    chatHistoryEl.appendChild(questionDiv);
+                } else if (message.type === 'loading') {
+                    const loadingDiv = document.createElement('div');
+                    loadingDiv.className = 'chat-message';
+                    loadingDiv.innerHTML = `
+                        <div class="message-answer">
+                            <div class="message-answer-content" style="font-size: 14px; padding: 12px;">
+                                🤖 Your AI assistant is analyzing your documents and preparing an intelligent response...
+                            </div>
+                        </div>
+                    `;
+                    chatHistoryEl.appendChild(loadingDiv);
+                } else if (message.type === 'answer') {
+                    const answerDiv = document.createElement('div');
+                    answerDiv.className = 'chat-message';
+                    
+                    if (message.isNothingFound) {
+                        answerDiv.innerHTML = `
+                            <div class="message-answer">
+                                <div class="message-answer-content" style="text-align: center; color: #666; padding: 16px;">
+                                    <p style="font-size: 14px; margin: 0;">🔍 I couldn't find relevant information in the documents to answer your question.</p>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        let metaText = '';
+                        if (message.meta.query_time_ms) {
+                            const seconds = (message.meta.query_time_ms / 1000).toFixed(2);
+                            metaText = `⚡ Response time: ${seconds}s`;
+                        }
+                        if (message.meta.cache_hit) {
+                            metaText += ' <span class="cache-badge">📦 From Cache</span>';
+                            // Add refresh button for cached responses
+                            // Find the question that corresponds to this answer (look backwards from current index)
+                            let questionIndex = -1;
+                            for (let i = index - 1; i >= 0; i--) {
+                                if (chatHistory[i].type === 'question') {
+                                    questionIndex = i;
+                                    break;
+                                }
+                            }
+                            if (questionIndex !== -1) {
+                                metaText += ` <button class="refresh-btn" onclick="refetchQuestionByIndex(${questionIndex})" title="Generate a fresh AI response by bypassing cache">⚡ Get Fresh Answer</button>`;
+                            }
+                        }
+                        
+                        let sourcesHtml = '';
+                        // Only show sources if answer is valid (not nothing found)
+                        if (!message.isNothingFound && message.sources && message.sources.length > 0) {
+                            sourcesHtml = `
+                                <div class="message-sources">
+                                    <div class="message-sources-title">📚 Supporting Sources & References</div>
+                                    ${message.sources.map((source, idx) => {
+                                        const sourceContent = source.content || (typeof source === 'string' ? source : 'Content not available');
+                                        const displayContent = typeof sourceContent === 'string' && sourceContent.length > 200 ? sourceContent.substring(0, 200) + '...' : sourceContent;
+                                        return `
+                                        <div class="source-item" style="margin-bottom: 8px; padding: 8px 10px; background: #f8f9fa; border-radius: 6px;">
+                                            <div class="source-content" style="font-size: 13px; line-height: 1.5;">
+                                                <strong>Reference ${idx + 1}:</strong> ${escapeHtml(displayContent)}
+                                                ${source.similarity_percent ? ` <span style="color: #667eea; font-size: 11px;">(Relevance: ${source.similarity_percent.toFixed(1)}%)</span>` : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                                    }).join('')}
+                                </div>
+                            `;
+                        }
+                        
+                        let answerHtml = message.content;
+                        if (typeof marked !== 'undefined') {
+                            answerHtml = marked.parse(answerHtml);
+                        } else {
+                            answerHtml = escapeHtml(answerHtml);
+                        }
+                        
+                        answerDiv.innerHTML = `
+                            <div class="message-answer">
+                                <div class="message-answer-header">
+                                    <div class="message-answer-title">✨ AI-Generated Answer</div>
+                                    <div class="message-answer-meta">${metaText}</div>
+                                </div>
+                                <div class="message-answer-content">${answerHtml}</div>
+                                ${sourcesHtml}
+                            </div>
+                        `;
+                    }
+                    
+                    chatHistoryEl.appendChild(answerDiv);
+                }
+            });
+            
+            // Scroll to bottom
+            chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function refetchWithFreshAI() {
+            if (!lastQuestion) {
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Add loading message
+            const loadingMessageId = addLoadingMessage();
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🤖 Analyzing... <span class="loading"></span>';
+            
+            // Make API request with bypass cache
+            makeQueryRequest(lastQuestion, true, loadingMessageId);
+        }
+        
+        function refetchQuestionByIndex(questionIndex) {
+            if (questionIndex < 0 || questionIndex >= chatHistory.length) {
+                return;
+            }
+            
+            const questionMessage = chatHistory[questionIndex];
+            if (!questionMessage || questionMessage.type !== 'question') {
+                return;
+            }
+            
+            const question = questionMessage.content;
+            if (!question) {
+                return;
+            }
+            
+            // Update lastQuestion
+            lastQuestion = question;
+            
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Add loading message
+            const loadingMessageId = addLoadingMessage();
+            
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '🤖 Analyzing... <span class="loading"></span>';
+            
+            // Make API request with bypass cache
+            makeQueryRequest(question, true, loadingMessageId);
+        }
+        
+        function makeQueryRequest(question, bypassCache, loadingMessageId) {
+            const submitBtn = document.getElementById('submitBtn');
+            
+            // Make API request
+            fetch(`${API_BASE}/query`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    question: question,
+                    session_id: sessionId,
+                    bypass_cache: bypassCache
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '🤖 Get AI Answer';
+                
+                // Re-enable refresh button if it exists
+                const refreshBtn = document.querySelector('.refresh-btn');
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = '⚡ Get Fresh Answer';
+                }
+                
+                if (data.success) {
+                    // Check if answer is meaningful and has sources
+                    let answer = data.answer || '';
+                    const sources = data.sources || data.source_documents || [];
+                    const hasSources = sources.length > 0;
+                    
+                    // Remove any source citations that might have slipped through
+                    answer = answer.replace(/\[Source\s+\d+\]/g, '');
+                    answer = answer.replace(/Based on the retrieved context\s*:?\s*/gi, '');
+                    
+                    // Check if answer is empty or contains negative indicators
+                    const negativeIndicators = [
+                        "i couldn't find",
+                        "no relevant answer",
+                        "unable to find",
+                        "i don't have",
+                        "i cannot find",
+                        "i'm sorry",
+                        "i apologize",
+                        "i don't know",
+                        "i do not know",
+                        "not available",
+                        "no information",
+                        "cannot provide",
+                        "unable to provide",
+                        "does not contain",
+                        "not found in",
+                        "i don't see",
+                        "i do not see",
+                        "please provide",
+                        "please ask",
+                        "please specify",
+                        "no question",
+                        "no context",
+                        "no information provided",
+                        "unable to assist",
+                        "cannot assist",
+                        "cannot answer",
+                        "unable to answer",
+                        "i cannot answer",
+                        "i can't answer",
+                        "i'm unable to",
+                        "i am unable to",
+                        "based on the information",
+                        "based on the provided",
+                        "the information provided",
+                        "the context provided"
+                    ];
+                    
+                    const answerLower = answer.toLowerCase().trim();
+                    const hasNegativeIndicator = negativeIndicators.some(indicator => answerLower.includes(indicator));
+                    
+                    // Check if answer is empty or too short
+                    const isEmptyAnswer = !answer || answer.trim().length === 0;
+                    
+                    // Check if answer is meaningful (has substantial content and doesn't have negative indicators)
+                    // Also check if answer is too generic or just asking for more info
+                    const isMeaningfulAnswer = answer.trim().length > 50 && 
+                                             !hasNegativeIndicator &&
+                                             !answerLower.startsWith("please") &&
+                                             !answerLower.startsWith("i don't") &&
+                                             !answerLower.startsWith("i cannot");
+                    
+                    // Additional check: if answer is asking for question/context, it's invalid
+                    const isAskingForInput = answerLower.includes("please provide") || 
+                                           answerLower.includes("please ask") ||
+                                           answerLower.includes("no question") ||
+                                           answerLower.includes("no context");
+                    
+                    // Determine if this is a valid answer: must have meaningful content AND sources AND not be asking for input
+                    const isValidAnswer = isMeaningfulAnswer && hasSources && !isAskingForInput;
+                    
+                    // If answer is not valid, show simple "Nothing found" message
+                    const isNothingFound = isEmptyAnswer || !isValidAnswer || hasNegativeIndicator || isAskingForInput;
+                    
+                    // Remove loading message
+                    if (loadingMessageId) {
+                        removeLoadingMessage(loadingMessageId);
+                    }
+                    
+                    // Add answer to chat history - only include sources if answer is valid
+                    addAnswerToHistory({
+                        answer: answer,
+                        sources: isValidAnswer ? sources : [], // Only include sources for valid answers
+                        meta: {
+                            query_time_ms: data.query_time_ms,
+                            cache_hit: data.cache_hit
+                        },
+                        isNothingFound: isNothingFound
+                    });
+                } else {
+                    let errorMsg = data.error || 'Unable to process your question at this time';
+                    
+                    // Replace specific error message
+                    if (errorMsg.includes('Number of requested results 0') || errorMsg.includes('cannot be negative, or zero')) {
+                        errorMsg = 'No documents are available in the system. Please upload documents first.';
+                    }
+                    
+                    // Remove loading message
+                    if (loadingMessageId) {
+                        removeLoadingMessage(loadingMessageId);
+                    }
+                    
+                    // Add error to chat history
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'chat-message';
+                    errorDiv.innerHTML = `
+                        <div class="message-answer">
+                            <div style="color: #dc3545; padding: 12px 16px; background: #f8d7da; border-radius: 10px; border-left: 4px solid #dc3545; font-size: 14px;">
+                                <strong>⚠️ Error:</strong> ${escapeHtml(errorMsg)}<br>
+                                <small style="color: #721c24; margin-top: 6px; display: block; font-size: 12px;">Please try rephrasing your question or check if documents are available.</small>
+                            </div>
+                                </div>
+                    `;
+                    const chatHistoryEl = document.getElementById('chatHistory');
+                    if (loadingMessageId) {
+                        const loadingMsg = chatHistory.find(msg => msg.id === loadingMessageId);
+                        if (loadingMsg) {
+                            removeLoadingMessage(loadingMessageId);
+                        }
+                    }
+                    chatHistoryEl.appendChild(errorDiv);
+                    chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+                }
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '🤖 Get AI Answer';
+                
+                // Re-enable refresh button if it exists
+                const refreshBtn = document.querySelector('.refresh-btn');
+                if (refreshBtn) {
+                    refreshBtn.disabled = false;
+                    refreshBtn.textContent = '⚡ Get Fresh Answer';
+                }
+                
+                let errorMsg = error.message || 'Unable to connect to the server';
+                
+                // Replace specific error message
+                if (errorMsg.includes('Number of requested results 0') || errorMsg.includes('cannot be negative, or zero')) {
+                    errorMsg = 'No documents are available in the system. Please upload documents first.';
+                }
+                
+                // Remove loading message and add error
+                const chatHistoryEl = document.getElementById('chatHistory');
+                if (loadingMessageId) {
+                    const loadingMsg = chatHistory.find(msg => msg.id === loadingMessageId);
+                    if (loadingMsg) {
+                        removeLoadingMessage(loadingMessageId);
+                    }
+                }
+                
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'chat-message';
+                errorDiv.innerHTML = `
+                    <div class="message-answer">
+                        <div style="color: #dc3545; padding: 12px 16px; background: #f8d7da; border-radius: 10px; border-left: 4px solid #dc3545; font-size: 14px;">
+                            <strong>⚠️ Connection Error:</strong> ${escapeHtml(errorMsg)}<br>
+                            <small style="color: #721c24; margin-top: 6px; display: block; font-size: 12px;">Please check your internet connection and try again.</small>
+                        </div>
+                    </div>
+                `;
+                chatHistoryEl.appendChild(errorDiv);
+                chatHistoryEl.scrollTop = chatHistoryEl.scrollHeight;
+            });
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('questionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitQuery();
+            }
+        });
+        
+        function showToast(text, type = 'info') {
+            const toast = document.getElementById('toastMessage');
+            if (!toast) {
+                console.error('Toast element not found');
+                return;
+            }
+            
+            // Clear any existing timeouts
+            if (toast._dismissTimeout) {
+                clearTimeout(toast._dismissTimeout);
+            }
+            if (toast._hideTimeout) {
+                clearTimeout(toast._hideTimeout);
+            }
+            
+            // Reset toast state
+            toast.style.animation = '';
+            toast.classList.remove('show', 'info', 'warning');
+            toast.style.display = 'none';
+            
+            // Set message and type
+            toast.textContent = text;
+            toast.className = `toast-message ${type}`;
+            
+            // Force reflow
+            void toast.offsetWidth;
+            
+            // Show the toast with animation
+            setTimeout(() => {
+                toast.style.display = 'block';
+                toast.classList.add('show');
+                
+                // Auto-dismiss after 3 seconds
+                toast._dismissTimeout = setTimeout(() => {
+                    toast.style.animation = 'toastFlyOut 0.3s ease-out forwards';
+                    toast._hideTimeout = setTimeout(() => {
+                        toast.classList.remove('show');
+                        toast.style.display = 'none';
+                        toast.style.animation = '';
+                    }, 300);
+                }, 3000);
+            }, 10);
+            
+            // Click to dismiss
+            toast.onclick = function() {
+                if (toast._dismissTimeout) {
+                    clearTimeout(toast._dismissTimeout);
+                }
+                if (toast._hideTimeout) {
+                    clearTimeout(toast._hideTimeout);
+                }
+                toast.style.animation = 'toastFlyOut 0.3s ease-out forwards';
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                    toast.style.display = 'none';
+                    toast.style.animation = '';
+                }, 300);
+            };
+        }
+    </script>
+</body>
+</html>
+

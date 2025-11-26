@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InHouse Knowledge AI - Admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Inter', Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 16px;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
+            padding: 0;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 35px 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: pulse 8s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            height: 60px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover {
+            transform: scale(1.05);
+        }
+        
+        h1 {
+            margin-bottom: 16px;
+            text-align: center;
+            font-size: 36px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 1;
+            letter-spacing: -0.5px;
+        }
+        
+        .header-actions {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        .user-info {
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 14px;
+            font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .attribution-footer {
+            background: rgba(102, 126, 234, 0.03);
+            border-top: 1px dashed rgba(102, 126, 234, 0.2);
+            padding: 16px 40px;
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            line-height: 1.5;
+            margin-top: auto;
+            font-style: italic;
+        }
+        
+        .section:last-of-type {
+            margin-bottom: 1px;
+        }
+        
+        .attribution-footer a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: 500;
+            font-style: normal;
+            transition: color 0.2s ease;
+        }
+        
+        .attribution-footer a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+        
+        .content-wrapper {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            min-height: calc(100vh - 250px);
+        }
+        
+        .section {
+            margin-bottom: 32px;
+            padding: 26px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 19px;
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .upload-area {
+            border: 3px dashed rgba(102, 126, 234, 0.4);
+            border-radius: 16px;
+            padding: 40px 32px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .upload-area:hover::before {
+            left: 100%;
+        }
+        
+        .upload-area:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
+        }
+        
+        .upload-area.dragover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: #764ba2;
+            border-width: 4px;
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+        
+        .btn:disabled::before {
+            display: none;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        }
+        
+        .btn-danger:hover {
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.5);
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .documents-list {
+            margin-top: 16px;
+        }
+        
+        .document-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 16px;
+            margin-bottom: 10px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .document-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+        
+        .document-info {
+            flex: 1;
+        }
+        
+        .document-name {
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .document-meta {
+            color: #666;
+            font-size: 13px;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chunks-list {
+            margin-top: 16px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .chunk-item {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .chunk-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .chunk-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .chunk-index {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 13px;
+        }
+        
+        .chunk-meta {
+            color: #666;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        
+        .chunk-content {
+            color: #2d2d2d;
+            line-height: 1.5;
+            margin: 8px 0;
+            padding: 10px 12px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-radius: 6px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 120px;
+            overflow-y: auto;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            font-size: 12px;
+        }
+        
+        .chunk-file-path {
+            color: #667eea;
+            font-size: 11px;
+            margin-top: 6px;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
+            padding: 4px 8px;
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .expand-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+        }
+        
+        .expand-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status.processed {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 28px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .stat-value {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #666;
+            margin-top: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-150px);
+            padding: 18px 28px;
+            border-radius: 14px;
+            display: none;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.25),
+                0 0 0 2px rgba(255, 255, 255, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            z-index: 99999;
+            max-width: 650px;
+            width: 90%;
+            text-align: center;
+            animation: flyIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            backdrop-filter: blur(20px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .message:hover {
+            transform: translateX(-50%) translateY(0) scale(1.03);
+            box-shadow: 
+                0 15px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 2px rgba(255, 255, 255, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        }
+        
+        .message.show {
+            display: block;
+            transform: translateX(-50%) translateY(0);
+        }
+        
+        .message.show:hover {
+            transform: translateX(-50%) translateY(0) scale(1.03);
+        }
+        
+        @keyframes flyIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-150px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+        }
+        
+        @keyframes flyOut {
+            from {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-150px) scale(0.9);
+            }
+        }
+        
+        .message.success {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            color: #155724;
+            border: 1px solid rgba(21, 87, 36, 0.2);
+        }
+        
+        .message.error {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            color: #721c24;
+            border: 1px solid rgba(114, 28, 36, 0.2);
+        }
+        
+        .message.info {
+            background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+            color: #0c5460;
+            border: 1px solid rgba(12, 84, 96, 0.2);
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Form Styles */
+        input[type="text"],
+        input[type="password"],
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background: rgba(102, 126, 234, 0.03);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 16px;
+            }
+            
+            .header {
+                padding: 25px 20px 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .content-wrapper {
+                padding: 25px 20px;
+            }
+            
+            .section {
+                padding: 24px;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .message {
+                top: 10px;
+                width: 95%;
+                padding: 14px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://raw.githubusercontent.com/msr5464/Basic-Automation-Framework/refs/heads/master/ThanosLogo.png" alt="Thanos Logo" class="logo">
+            </div>
+            <h1>InHouse Knowledge AI - Admin Panel</h1>
+            <div class="header-actions">
+                <span id="userInfo" class="user-info"></span>
+                <button onclick="logout()" class="btn btn-small">🚪 Logout</button>
+            </div>
+        </div>
+        
+        <div class="content-wrapper">
+            <div id="message" class="message" title="Click to dismiss"></div>
+        
+        <!-- User Management Section -->
+        <div class="section">
+            <h2>👥 User Management</h2>
+            
+            <!-- Create User Form -->
+            <div style="background: white; padding: 16px; border-radius: 8px; margin-bottom: 16px; border: 2px solid #e0e0e0;">
+                <h3 style="margin-top: 0; margin-bottom: 16px; color: #667eea; font-size: 18px; font-weight: 700;">✨ Create New User Account</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 10px; align-items: end;">
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px;">👤 Username</label>
+                        <input type="text" id="newUsername" placeholder="Enter unique username" style="width: 100%; padding: 12px 16px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 10px; font-size: 14px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'" onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px;">🔒 Password</label>
+                        <input type="password" id="newPassword" placeholder="Enter secure password" style="width: 100%; padding: 12px 16px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 10px; font-size: 14px; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'" onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.boxShadow='none'">
+                    </div>
+                    <div>
+                        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px;">👥 User Role</label>
+                        <select id="newUserRole" style="width: 100%; padding: 12px 16px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 10px; font-size: 14px; background: white; transition: all 0.3s ease;" onfocus="this.style.borderColor='#667eea'; this.style.boxShadow='0 0 0 3px rgba(102, 126, 234, 0.1)'" onblur="this.style.borderColor='rgba(102, 126, 234, 0.2)'; this.style.boxShadow='none'">
+                            <option value="customer">Customer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <button class="btn" onclick="createUser()" style="padding: 12px 24px; font-size: 14px; white-space: nowrap;">✨ Create User</button>
+                </div>
+            </div>
+            
+            <!-- Users List -->
+            <div id="usersList" style="margin-top: 16px;">
+                <p style="text-align: center; color: #666; padding: 16px; font-size: 15px;">🔄 Loading user accounts...</p>
+            </div>
+        </div>
+        
+        <!-- Upload Section -->
+        <div class="section">
+            <h2>📤 Upload Documents</h2>
+            <div class="upload-area" id="uploadArea">
+                <p style="font-size: 18px; font-weight: 600; color: #667eea; margin-bottom: 8px;">📄 Drag and drop files here or click to browse</p>
+                <p style="color: #666; font-size: 14px; margin-top: 8px;">Supported formats: PDF, CSV, Excel (.xlsx, .xls), Word (.docx, .doc, .docs), PowerPoint (.pptx, .ppt), Text files (.txt, .text, .md)</p>
+                <input type="file" id="fileInput" multiple accept=".pdf,.csv,.xlsx,.xls,.docx,.doc,.docs,.pptx,.ppt,.txt,.text,.md">
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" id="uploadBtn" disabled>📤 Upload & Process Files</button>
+            </div>
+        </div>
+        
+        <!-- Statistics Section -->
+        <div class="section">
+            <h2>📊 System Statistics</h2>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalDocs">0</div>
+                    <div class="stat-label">Total Documents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="totalChunks">0</div>
+                    <div class="stat-label">Total Chunks</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Documents List Section -->
+        <div class="section">
+            <h2>📋 Uploaded Documents</h2>
+            <div class="documents-list" id="documentsList">
+                <p style="text-align: center; color: #666; padding: 40px; font-size: 15px;">📭 No documents uploaded yet. Upload your first document to get started!</p>
+            </div>
+        </div>
+        
+        <!-- ChromaDB Contents Section -->
+        <div class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">🗄️ ChromaDB Contents</h2>
+                <button class="btn btn-danger" onclick="resetChromaDB()">
+                    ⚠️ Reset Knowledge Base
+                </button>
+            </div>
+            <div id="chromadbInfo" style="margin-bottom: 15px; padding: 16px; background: linear-gradient(135deg, #e8f4f8 0%, #d1ecf1 100%); border-radius: 12px; border: 1px solid rgba(12, 84, 96, 0.1);">
+                <p style="text-align: center; color: #0c5460; font-weight: 500;">🔄 Loading ChromaDB contents...</p>
+            </div>
+            <div class="chunks-list" id="chunksList"></div>
+        </div>
+        </div>
+        
+        <div class="attribution-footer">
+            This <a target="_blank" href="https://github.com/msr5464/my-rag">open source</a> dashboard is created by <a target="_blank" href="https://www.linkedin.com/in/mukesh-rajput">Mukesh Rajput</a> to transform documents into an intelligent knowledge base using AI and LLM technology.
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api/admin';
+        const AUTH_API = '/api/auth';
+        
+        let currentUser = null;
+        let selectedFiles = [];
+        
+        // Check authentication on page load
+        checkAuth();
+        
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${AUTH_API}/me`, {
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success && data.user) {
+                        currentUser = data.user;
+                        if (data.user.role !== 'admin') {
+                            alert('Admin access required');
+                            window.location.href = '/admin/login';
+                            return;
+                        }
+                        updateUserDisplay();
+                    } else {
+                        redirectToLogin();
+                    }
+                } else {
+                    redirectToLogin();
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                redirectToLogin();
+            }
+        }
+        
+        function redirectToLogin() {
+            window.location.href = '/admin/login';
+        }
+        
+        function updateUserDisplay() {
+            // Update UI to show logged-in user
+            const userInfo = document.getElementById('userInfo');
+            if (userInfo && currentUser) {
+                userInfo.textContent = `Logged in as: ${currentUser.username}`;
+            }
+        }
+        
+        async function logout() {
+            try {
+                await fetch(`${AUTH_API}/logout`, {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                window.location.href = '/admin/login';
+            } catch (error) {
+                console.error('Logout failed:', error);
+                window.location.href = '/admin/login';
+            }
+        }
+        
+        // Upload area handlers
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        function handleFiles(files) {
+            // Supported file extensions (must match backend)
+            const supportedExtensions = ['.pdf', '.csv', '.xlsx', '.xls', '.docx', '.doc', '.docs', '.pptx', '.ppt', '.txt', '.text', '.md'];
+            
+            selectedFiles = Array.from(files).filter(file => {
+                const fileName = file.name.toLowerCase();
+                const extension = fileName.substring(fileName.lastIndexOf('.'));
+                const isSupported = supportedExtensions.includes(extension);
+                
+                if (!isSupported) {
+                    showMessage(`⚠️ Skipping unsupported file: ${file.name} (${extension || 'no extension'})`, 'error');
+                }
+                
+                return isSupported;
+            });
+            
+            uploadBtn.disabled = selectedFiles.length === 0;
+            if (selectedFiles.length > 0) {
+                uploadArea.innerHTML = `<p style="font-size: 18px; font-weight: 600; color: #667eea; margin-bottom: 8px;">✅ ${selectedFiles.length} file(s) ready to upload</p><p style="color: #666; font-size: 14px; margin-top: 8px;">Click "Upload & Process Files" to proceed</p>`;
+            } else if (files.length > 0) {
+                uploadArea.innerHTML = '<p style="font-size: 18px; font-weight: 600; color: #667eea; margin-bottom: 8px;">📄 Drag and drop files here or click to browse</p><p style="color: #e74c3c; font-size: 14px; margin-top: 8px;">⚠️ No supported files selected. Supported formats: PDF, CSV, Excel (.xlsx, .xls), Word (.docx, .doc, .docs), PowerPoint (.pptx, .ppt), Text files (.txt, .text, .md)</p>';
+            }
+        }
+        
+        uploadBtn.addEventListener('click', async () => {
+            if (selectedFiles.length === 0) return;
+            
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '📤 Uploading... <span class="loading"></span>';
+            
+            for (const file of selectedFiles) {
+                await uploadFile(file);
+            }
+            
+            selectedFiles = [];
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '📤 Upload & Process Files';
+            fileInput.value = '';
+                uploadArea.innerHTML = '<p style="font-size: 18px; font-weight: 600; color: #667eea; margin-bottom: 8px;">📄 Drag and drop files here or click to browse</p><p style="color: #666; font-size: 14px; margin-top: 8px;">Supported formats: PDF, CSV, Excel (.xlsx, .xls), Word (.docx, .doc, .docs), PowerPoint (.pptx, .ppt), Text files (.txt, .text, .md)</p>';
+            
+            loadDocuments();
+            loadStats();
+            loadChromaDBContents();
+        });
+        
+        async function uploadFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            try {
+                const response = await fetch(`${API_BASE}/upload`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`✅ Successfully uploaded and processed: ${file.name}`, 'success');
+                } else {
+                    showMessage(`❌ Failed to upload ${file.name}: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error uploading ${file.name}: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+        
+        async function loadDocuments() {
+            try {
+                const response = await fetch(`${API_BASE}/documents`, {
+                    credentials: 'include'
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayDocuments(result.documents);
+                }
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+        
+        function displayDocuments(documents) {
+            const list = document.getElementById('documentsList');
+            
+            if (documents.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666; padding: 40px; font-size: 15px;">📭 No documents uploaded yet. Upload your first document to get started!</p>';
+                return;
+            }
+            
+            list.innerHTML = documents.map(doc => `
+                <div class="document-item">
+                    <div class="document-info">
+                        <div class="document-name">${doc.name}</div>
+                        <div class="document-meta">
+                            Uploaded: ${new Date(doc.uploaded_at).toLocaleString()}
+                            <span class="status processed">${doc.status}</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-danger" onclick="deleteDocument('${doc.id}')" style="font-size: 13px; padding: 10px 18px;">🗑️ Delete</button>
+                </div>
+            `).join('');
+        }
+        
+        async function deleteDocument(docId) {
+            if (!confirm('⚠️ Are you sure you want to delete this document?\n\nThis will remove the document and all its associated data from the knowledge base.\n\nThis action cannot be undone.')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/documents/${docId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage('✅ Document deleted successfully from the knowledge base', 'success');
+                    loadDocuments();
+                    loadStats();
+                    loadChromaDBContents();
+                } else {
+                    showMessage(`❌ Failed to delete document: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error deleting document: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+        
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/stats`, {
+                    credentials: 'include'
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    document.getElementById('totalDocs').textContent = result.total_documents || 0;
+                    document.getElementById('totalChunks').textContent = result.total_chunks || 0;
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+        
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            
+            // Remove any existing timeout
+            if (message.timeoutId) {
+                clearTimeout(message.timeoutId);
+                message.timeoutId = null;
+            }
+            
+            // Reset all styles and classes to ensure clean state
+            message.style.display = 'none';
+            message.style.animation = '';
+            message.classList.remove('show', 'success', 'error', 'info');
+            
+            // Small delay to ensure previous animation completes
+            setTimeout(() => {
+                // Update message content and type
+                message.textContent = text;
+                message.className = `message ${type}`;
+                message.style.display = 'block';
+                
+                // Force reflow to ensure animation starts
+                void message.offsetWidth;
+                
+                // Add show class to trigger animation
+                message.classList.add('show');
+                
+                // Ensure message is visible by scrolling to top smoothly (only if scrolled down)
+                if (window.scrollY > 100) {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+                
+                // Auto-dismiss after 5 seconds (longer for errors)
+                const dismissTime = type === 'error' ? 7000 : 5000;
+                message.timeoutId = setTimeout(() => {
+                    message.classList.remove('show');
+                    message.style.animation = 'flyOut 0.4s ease-out forwards';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                        message.style.animation = '';
+                        message.classList.remove('success', 'error', 'info');
+                    }, 400);
+                }, dismissTime);
+                
+                // Add click to dismiss
+                message.onclick = () => {
+                    if (message.timeoutId) {
+                        clearTimeout(message.timeoutId);
+                        message.timeoutId = null;
+                    }
+                    message.classList.remove('show');
+                    message.style.animation = 'flyOut 0.4s ease-out forwards';
+                    setTimeout(() => {
+                        message.style.display = 'none';
+                        message.style.animation = '';
+                        message.classList.remove('success', 'error', 'info');
+                    }, 400);
+                };
+            }, 50);
+        }
+        
+        async function loadChromaDBContents() {
+            const chunksList = document.getElementById('chunksList');
+            const chromadbInfo = document.getElementById('chromadbInfo');
+            
+            try {
+                const response = await fetch(`${API_BASE}/chromadb`, {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Display collection info
+                    if (data.total_chunks === 0) {
+                        chromadbInfo.innerHTML = '<p style="text-align: center; color: #666; padding: 20px; font-size: 15px;">📭 No data found in ChromaDB. Upload documents to populate the knowledge base.</p>';
+                        chunksList.innerHTML = '';
+                        return;
+                    }
+                    
+                    const info = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+                            <div>
+                                <strong>Collection:</strong> ${data.collection_name || 'N/A'} | 
+                                <strong>Total Chunks:</strong> ${data.total_chunks} |
+                                <strong>Embeddings:</strong> ${data.has_embeddings ? 'Yes' : 'No'}
+                                ${data.embedding_dimension ? ` | <strong>Dimension:</strong> ${data.embedding_dimension}` : ''}
+                            </div>
+                        </div>
+                    `;
+                    chromadbInfo.innerHTML = info;
+                    
+                    // Display chunks
+                    if (data.chunks && data.chunks.length > 0) {
+                        chunksList.innerHTML = data.chunks.map((chunk) => {
+                            const displayContent = chunk.content;
+                            const filePath = chunk.file_path !== 'N/A' ? chunk.file_path : (chunk.metadata?.source || 'N/A');
+                            const fileName = filePath.split('/').pop() || filePath;
+                            const fileId = fileName.split('_').shift() || fileName; // Extract document ID from filename
+                            
+                            return `
+                                <div class="chunk-item">
+                                    <div class="chunk-header">
+                                        <div>
+                                            <span class="chunk-index">Chunk #${chunk.index}</span>
+                                            <span class="chunk-meta" style="margin-left: 15px;">
+                                                Length: ${chunk.content_length} chars | 
+                                                ID: ${chunk.id.substring(0, 8)}...
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="chunk-content" id="chunkContent${chunk.index}" data-expanded="false" data-full-content="${escapeHtml(chunk.content_full).replace(/"/g, '&quot;').replace(/'/g, '&#39;')}">${escapeHtml(displayContent)}</div>
+                                    ${chunk.content_length > 500 ? `
+                                        <button class="expand-btn" onclick="toggleChunk(${chunk.index})">
+                                            📄 Show Full Content
+                                        </button>
+                                    ` : ''}
+                                    <div class="chunk-file-path">
+                                        📄 ${chunk.document_id ? `<a href="/api/admin/documents/${chunk.document_id}/download" target="_blank" style="color: #667eea; text-decoration: underline; cursor: pointer;">${escapeHtml(fileName)}</a>` : escapeHtml(fileName)}
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    } else {
+                        chunksList.innerHTML = '';
+                    }
+                } else {
+                    chromadbInfo.innerHTML = `<p style="color: #dc3545; padding: 20px; text-align: center;">❌ Error: ${data.error || 'Failed to load ChromaDB contents'}</p>`;
+                    chunksList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">❌ Failed to load document chunks</p>';
+                }
+            } catch (error) {
+                chromadbInfo.innerHTML = `<p style="color: #dc3545; padding: 20px; text-align: center;">❌ Error: ${error.message || 'Network error occurred'}</p>`;
+                chunksList.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">❌ Failed to load ChromaDB contents</p>';
+            }
+        }
+        
+        function toggleChunk(index) {
+            const contentDiv = document.getElementById(`chunkContent${index}`);
+            if (!contentDiv) {
+                console.error(`Content div not found for chunk ${index}`);
+                return;
+            }
+            
+            // Find the button - search through siblings
+            let btn = contentDiv.nextElementSibling;
+            while (btn && !btn.classList.contains('expand-btn')) {
+                btn = btn.nextElementSibling;
+            }
+            
+            if (!btn) {
+                console.error(`Button not found for chunk ${index}`);
+                return;
+            }
+            
+            // Get full content from data attribute
+            const fullContent = contentDiv.getAttribute('data-full-content');
+            if (!fullContent) {
+                console.error(`Full content not found for chunk ${index}`);
+                return;
+            }
+            
+            // Unescape HTML entities
+            const unescapedContent = fullContent.replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            
+            // Check expansion state using data attribute
+            const isExpanded = contentDiv.getAttribute('data-expanded') === 'true';
+            
+            if (!isExpanded) {
+                // Expand - show full content
+                contentDiv.innerHTML = unescapedContent;
+                contentDiv.setAttribute('data-expanded', 'true');
+                btn.textContent = '📄 Show Less';
+            } else {
+                // Collapse - show preview
+                const preview = unescapedContent.substring(0, 500) + '...';
+                contentDiv.innerHTML = escapeHtml(preview);
+                contentDiv.setAttribute('data-expanded', 'false');
+                btn.textContent = '📄 Show Full Content';
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        async function resetChromaDB() {
+            // Double confirmation (no API key prompt - user already authenticated)
+            if (!confirm('⚠️ CRITICAL ACTION: Reset Knowledge Base\n\nThis will permanently delete:\n• ALL vector embeddings in ChromaDB\n• ALL uploaded document files\n• ALL files in storage/chroma_db (except chroma.sqlite3)\n• ALL cached embeddings in storage/embedding_cache\n• ALL query cache (cached answers)\n• ALL document metadata\n\nNote: The chroma.sqlite3 database file will be preserved.\n\n⚠️ This action CANNOT be undone!\n\nAre you absolutely sure you want to proceed?')) {
+                return;
+            }
+            
+            try {
+                showMessage('🔄 Resetting knowledge base and removing all data...', 'info');
+                
+                const response = await fetch(`${API_BASE}/chromadb/reset`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        delete_all: true
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const fileCount = result.deleted_files || 0;
+                    const details = result.details || {};
+                    let detailMsg = '';
+                    if (details.documents || details.chroma_db_files || details.embedding_cache_files) {
+                        const parts = [];
+                        if (details.documents) parts.push(`${details.documents} document(s)`);
+                        if (details.chroma_db_files) parts.push(`${details.chroma_db_files} ChromaDB file(s)`);
+                        if (details.embedding_cache_files) parts.push(`${details.embedding_cache_files} cache file(s)`);
+                        detailMsg = ` (${parts.join(', ')})`;
+                    }
+                    showMessage(`✅ Knowledge base reset successfully! Removed ${fileCount} file(s)${detailMsg} and all vector embeddings.`, 'success');
+                    // Refresh all data
+                    loadDocuments();
+                    loadStats();
+                    loadChromaDBContents();
+                } else {
+                    showMessage(`❌ Failed to reset knowledge base: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error resetting knowledge base: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+        
+        // Load initial data
+        loadDocuments();
+        loadStats();
+        loadUsers();
+        loadChromaDBContents();
+        
+        // User Management Functions
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${AUTH_API}/users`, {
+                    credentials: 'include'
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    displayUsers(result.users);
+                } else {
+                    document.getElementById('usersList').innerHTML = `<p style="color: #dc3545; padding: 20px; text-align: center;">❌ Error: ${result.error || 'Failed to load users'}</p>`;
+                }
+            } catch (error) {
+                document.getElementById('usersList').innerHTML = `<p style="color: #dc3545; padding: 20px; text-align: center;">❌ Error loading users: ${error.message || 'Network error occurred'}</p>`;
+            }
+        }
+        
+        function displayUsers(users) {
+            const list = document.getElementById('usersList');
+            
+            if (users.length === 0) {
+                list.innerHTML = '<p style="text-align: center; color: #666;">No users found</p>';
+                return;
+            }
+            
+            list.innerHTML = users.map(user => {
+                const isCurrentUser = currentUser && currentUser.user_id === user.user_id;
+                const createdDate = user.created_at ? new Date(user.created_at).toLocaleString() : 'N/A';
+                const lastLogin = user.last_login ? new Date(user.last_login).toLocaleString() : 'Never';
+                
+                return `
+                    <div class="document-item" style="margin-bottom: 15px;">
+                        <div class="document-info" style="flex: 1;">
+                            <div class="document-name" style="font-size: 18px; font-weight: 600;">
+                                ${escapeHtml(user.username)}
+                                ${isCurrentUser ? '<span style="color: #667eea; margin-left: 10px;">(You)</span>' : ''}
+                            </div>
+                            <div class="document-meta" style="margin-top: 8px;">
+                                <span class="status ${user.role === 'admin' ? 'processed' : ''}" style="background: ${user.role === 'admin' ? '#667eea' : '#28a745'};">
+                                    ${user.role === 'admin' ? '👑 Admin' : '👤 Customer'}
+                                </span>
+                                <span style="margin-left: 15px; color: #666;">Created: ${createdDate}</span>
+                                <span style="margin-left: 15px; color: #666;">Last Login: ${lastLogin}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: nowrap;">
+                            <select onchange="updateUserRole('${user.user_id}', this.value, '${user.role}')" 
+                                    style="padding: 8px 10px; border: 2px solid rgba(102, 126, 234, 0.2); border-radius: 10px; background: white; font-size: 12px; width: 100px; flex-shrink: 0;"
+                                    ${isCurrentUser ? 'disabled title="Cannot change your own role"' : ''}>
+                                <option value="customer" ${user.role === 'customer' ? 'selected' : ''}>Customer</option>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                            </select>
+                            <button class="btn" onclick="resetUserPassword('${user.user_id}', '${escapeHtml(user.username)}')" 
+                                    style="background: linear-gradient(135deg, #ffc107 0%, #ffb300 100%); color: #000; padding: 8px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;">
+                                🔑 Reset
+                            </button>
+                            <button class="btn btn-danger" onclick="deleteUser('${user.user_id}', '${escapeHtml(user.username)}')"
+                                    ${isCurrentUser ? 'disabled title="Cannot delete your own account"' : ''}
+                                    style="padding: 8px 12px; font-size: 12px; font-weight: 600; white-space: nowrap; flex-shrink: 0;">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        async function createUser() {
+            const username = document.getElementById('newUsername').value.trim();
+            const password = document.getElementById('newPassword').value;
+            const role = document.getElementById('newUserRole').value;
+            
+            if (!username || !password) {
+                showMessage('❌ Username and password are required to create a new account', 'error');
+                return;
+            }
+            
+            if (password.length < 4) {
+                showMessage('❌ Password must be at least 4 characters long for security', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${AUTH_API}/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password, role })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`✅ User account "${username}" created successfully with ${role} role`, 'success');
+                    document.getElementById('newUsername').value = '';
+                    document.getElementById('newPassword').value = '';
+                    document.getElementById('newUserRole').value = 'customer';
+                    loadUsers();
+                } else {
+                    showMessage(`❌ Failed to create user account: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error creating user account: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+        
+        async function updateUserRole(userId, newRole, currentRole) {
+            if (newRole === currentRole) {
+                return; // No change
+            }
+            
+            if (!confirm(`👥 Change user role to ${newRole}?\n\nThis will update the user's permissions immediately.\n\nClick OK to proceed.`)) {
+                // Reset dropdown
+                loadUsers();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${AUTH_API}/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ role: newRole })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`✅ User role successfully updated to ${newRole}`, 'success');
+                    loadUsers();
+                } else {
+                    showMessage(`❌ Failed to update user role: ${result.error || 'Unknown error occurred'}`, 'error');
+                    loadUsers(); // Reload to reset dropdown
+                }
+            } catch (error) {
+                showMessage(`❌ Error updating user role: ${error.message || 'Network error occurred'}`, 'error');
+                loadUsers(); // Reload to reset dropdown
+            }
+        }
+        
+        async function resetUserPassword(userId, username) {
+            const newPassword = prompt(`🔑 Enter new password for "${username}":\n\nPassword must be at least 4 characters long.`);
+            
+            if (!newPassword) {
+                return; // User cancelled
+            }
+            
+            if (newPassword.length < 4) {
+                showMessage('❌ Password must be at least 4 characters long for security', 'error');
+                return;
+            }
+            
+            if (!confirm(`🔑 Reset password for user "${username}"?\n\nThis will change the user's password immediately.\n\nClick OK to proceed.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${AUTH_API}/users/${userId}/reset-password`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ new_password: newPassword })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`✅ Password successfully reset for user "${username}"`, 'success');
+                } else {
+                    showMessage(`❌ Failed to reset password: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error resetting password: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+        
+        async function deleteUser(userId, username) {
+            if (!confirm(`⚠️ Are you absolutely sure you want to delete user "${username}"?\n\nThis will permanently remove:\n- User account\n- All associated data\n- Access permissions\n\nThis action CANNOT be undone!\n\nClick OK to proceed.`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${AUTH_API}/users/${userId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showMessage(`✅ User account "${username}" deleted successfully`, 'success');
+                    loadUsers();
+                } else {
+                    showMessage(`❌ Failed to delete user account: ${result.error || 'Unknown error occurred'}`, 'error');
+                }
+            } catch (error) {
+                showMessage(`❌ Error deleting user account: ${error.message || 'Network error occurred'}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+
