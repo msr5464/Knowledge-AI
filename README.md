@@ -3,7 +3,7 @@
 
   # INHOUSE KNOWLEDGE AI
 
-  **🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | RAG Technology | Transform Your Documents into Knowledge**
+  **🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | RAG Technology | Knowledge Hub ~ QnA with Documents**
   
   [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
   [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
