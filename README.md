@@ -129,23 +129,20 @@ The Admin Portal provides comprehensive document management and system administr
 
 ### Installation
 
-**Windows (PowerShell):**
-```powershell
-.\scripts\install.ps1
-.\scripts\run.ps1
-```
-
-**Windows (Command Prompt):**
-```cmd
-scripts\install.bat
-scripts\run.bat
-```
-
 **macOS / Linux:**
 ```bash
 chmod +x scripts/*.sh
 bash scripts/install.sh
-bash scripts/run.sh
+```
+**Windows:**
+Command Prompt
+```cmd
+scripts\install.bat
+```
+**Windows:**
+PowerShell
+```powershell
+.\scripts\install.ps1
 ```
 
 The installation script will automatically:
@@ -155,6 +152,24 @@ The installation script will automatically:
 - ✅ Download default AI model (llama3.2:3b) - your local LLM
 - ✅ Create AI configuration file from template
 - ✅ Initialize AI knowledge base storage directories
+
+### Run the Application
+
+**macOS / Linux:**
+```bash
+bash scripts/run.sh
+```
+**Windows:**
+Command Prompt
+```cmd
+scripts\run.bat
+```
+**Windows:**
+PowerShell
+```powershell
+.\scripts\run.ps1
+```
+
 
 ### First-Time Configuration
 
