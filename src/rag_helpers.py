@@ -33,7 +33,7 @@ def import_chromadb_helper():
         return ChromaDBHelper
     except ImportError:
         sys.path.insert(0, str(Path(__file__).parent))
-        from chromadb_helper import ChromaDBHelper
+        from src.chromadb_helper import ChromaDBHelper
         return ChromaDBHelper
 
 

@@ -29,7 +29,7 @@ openai>=1.6.0
 langchain-ollama>=0.1.0
 
 # Utilities
-numpy>=1.26.0
+numpy>=1.26.0,<2.0.0
 sentence-transformers>=2.7.0
 huggingface-hub>=0.20.0
 urllib3<2.0.0  # Pin to <2.0 to avoid OpenSSL warning on macOS (LibreSSL)

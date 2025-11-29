@@ -23,7 +23,7 @@ try:
     )
 except ImportError:
     try:
-        from core.imports import (
+        from src.imports import (
             RecursiveCharacterTextSplitter, Chroma, OpenAIEmbeddings, ChatOpenAI,
             Document, ChatPromptTemplate, BM25Retriever, CrossEncoder,
             LANGCHAIN_AVAILABLE, BM25_AVAILABLE, ENSEMBLE_AVAILABLE,
@@ -232,6 +232,14 @@ class BaseRAG:
     
     def _init_embeddings(self, use_local_embeddings: bool):
         """Initialize embeddings."""
+        # Check for LLM provider preference
+        llm_provider = os.getenv("LLM_PROVIDER", "").lower()
+        
+        # Automatically disable local embeddings if using OpenAI
+        if llm_provider == "openai":
+            use_local_embeddings = False
+            debug_log("ℹ️  LLM_PROVIDER=openai detected: Using OpenAI embeddings", self.debug_mode)
+
         if use_local_embeddings or not os.getenv("OPENAI_API_KEY"):
             try:
                 from langchain_huggingface import HuggingFaceEmbeddings
@@ -268,8 +276,9 @@ class BaseRAG:
         
         # Use OpenAI only if explicitly requested or if valid key is provided and Ollama not preferred
         if llm_provider == "openai" or (has_valid_openai_key and llm_provider != "ollama"):
-            self.llm = ChatOpenAI(temperature=0, model="gpt-3.5-turbo")
-            debug_log("✅ Using OpenAI LLM", self.debug_mode)
+            openai_model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+            self.llm = ChatOpenAI(temperature=0, model=openai_model)
+            debug_log(f"✅ Using OpenAI LLM ({openai_model})", self.debug_mode)
         elif OLLAMA_AVAILABLE or llm_provider == "ollama":
             if USE_NEW_OLLAMA:
                 from langchain_ollama import ChatOllama
@@ -560,7 +569,17 @@ class BaseRAG:
                 min_similarity_threshold=self.min_similarity_threshold
             )
         
+        
         print(f"⏱️  Query time: {elapsed_time:.2f}ms")
+        
+        # Show performance warning if query took more than 30 seconds
+        if elapsed_time > 30000:  # 30 seconds in milliseconds
+            print("\n⚠️  Performance Warning:")
+            print("   Query took longer than 30 seconds. Consider:")
+            print("   1. Using a machine with higher specifications for better Ollama performance")
+            print("   2. Upgrading to a more powerful Ollama model")
+            print("   3. Switching to OpenAI for faster responses (set LLM_PROVIDER=openai in .env)")
+        
         return result
     
     def _query_impl(self, question: str) -> Dict[str, Any]:

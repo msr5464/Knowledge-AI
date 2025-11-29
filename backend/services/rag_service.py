@@ -16,8 +16,8 @@ import uuid
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from core.multi_format_rag import MultiFormatRAG
-from core.settings import get_config
+from src.multi_format_rag import MultiFormatRAG
+from src.settings import get_config
 
 
 class RAGService:
@@ -78,7 +78,7 @@ class RAGService:
     
     def _load_existing_documents(self):
         """Load existing documents from storage directory into RAG system."""
-        from core.chromadb_helper import ChromaDBHelper
+        from src.chromadb_helper import ChromaDBHelper
         
         # Ensure vectorstore is loaded for checking
         self.rag._load_vectorstore_if_needed()
@@ -244,7 +244,7 @@ class RAGService:
                 start_time = time.time()
                 
                 from langchain_core.prompts import ChatPromptTemplate
-                from core.rag_helpers import extract_answer_from_llm_result
+                from src.rag_helpers import extract_answer_from_llm_result
                 
                 # Direct LLM system message (no context)
                 DIRECT_LLM_MESSAGE = """You are a helpful AI assistant. Answer questions directly and clearly based on your knowledge.
@@ -318,7 +318,7 @@ Instructions:
             # Remove from RAG system (remove documents by file path)
             if doc_path.exists() and self.rag.vectorstore:
                 try:
-                    from core.chromadb_helper import ChromaDBHelper
+                    from src.chromadb_helper import ChromaDBHelper
                     removed_count = ChromaDBHelper.remove_documents_by_file_path(
                         self.rag.vectorstore, 
                         str(doc_path),

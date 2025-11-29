@@ -22,8 +22,8 @@ from typing import List, Union, Optional
 
 # Handle both relative and absolute imports
 try:
-    from .base_rag import BaseRAG
-    from .rag_helpers import calculate_file_hash, add_file_metadata_to_documents
+    from src.base_rag import BaseRAG
+    from src.rag_helpers import calculate_file_hash, add_file_metadata_to_documents
     from langchain_core.documents import Document
 except ImportError:
     # Fallback for direct script execution
