@@ -14,6 +14,7 @@
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Demo Video](#demo-video)
 - [Features](#features)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
@@ -56,6 +57,16 @@
 - **📚 Multi-Format Document Support**: Seamlessly process PDF, CSV, Excel, Word (.docx, .doc, .docs), PowerPoint (.pptx, .ppt), and text files (.txt, .text, .md) with AI-driven content extraction
 - **🔒 Flexible LLM Options**: Choose between local processing with Ollama (100% private, no data leaves your machine) or cloud-based OpenAI API for enhanced performance
 - **🔌 REST API Integration**: Full programmatic access with AI-powered endpoints for seamless integration with other systems
+
+---
+
+## 🎥 Demo Video
+
+Watch a comprehensive demo and explanation of the InHouse Knowledge AI system:
+
+[![Demo Video](https://img.youtube.com/vi/L2yZFrl5NPc/0.jpg)](https://youtu.be/L2yZFrl5NPc)
+
+**[Click here to watch the full demo on YouTube](https://youtu.be/L2yZFrl5NPc)**
 
 ---
 
@@ -150,7 +161,7 @@ The installation script will automatically:
 - ✅ Install all AI and ML dependencies
 - ✅ Install and configure Ollama (LLM engine)
 - ✅ Download default AI model (llama3.2:3b) - your local LLM
-- ✅ Create AI configuration file from template
+- ✅ Create `config/.env` configuration file from `config/env.example` template
 - ✅ Initialize AI knowledge base storage directories
 
 ### Run the Application
