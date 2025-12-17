@@ -1,4 +1,4 @@
-
+<div>
   <img src="https://raw.githubusercontent.com/msr5464/Basic-Automation-Framework/refs/heads/master/ThanosLogo.png" title="Powered by Thanos and created by Mukesh Rajput" height="50">
 
   # INHOUSE KNOWLEDGE AI
@@ -443,5 +443,5 @@ This project is open source. See [LICENSE](LICENSE) file for details.
 ---
 
 <div align="center">
-  <strong>Made with ❤️ for intelligent document querying</strong>
+  <strong>Made with ❤️ for Engineering Team!</strong>
 </div>
