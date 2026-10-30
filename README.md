@@ -1,13 +1,9 @@
-<div>
-  <img src="https://raw.githubusercontent.com/msr5464/Basic-Automation-Framework/refs/heads/master/Logo-full.png" title="Powered by Thanos and created by Mukesh Rajput" height="50">
+# <a href="https://www.linkedin.com/in/mukesh-rajput/"><img align="right" src="https://raw.githubusercontent.com/msr5464/Selenium-Automation-Framework/refs/heads/master/Logo-full.png" alt="Mukesh" height="40"></a> INHOUSE KNOWLEDGE AI
 
-  # INHOUSE KNOWLEDGE AI
+**🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | RAG Technology | Knowledge Hub ~ QnA with Documents**
 
-  **🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | RAG Technology | Knowledge Hub ~ QnA with Documents**
-  
-  [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-</div>
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 ---
 
@@ -427,12 +423,6 @@ This project is open source. See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 👤 Creator
-
-**Mukesh Rajput** For any further help or queries, contact [@mukesh.rajput](https://www.linkedin.com/in/mukesh-rajput/)
-
----
-
 ## 🙏 Acknowledgments
 
 - 🤖 **AI Framework**: Built with [LangChain](https://www.langchain.com/) for advanced RAG and AI orchestration
@@ -441,7 +431,15 @@ This project is open source. See [LICENSE](LICENSE) file for details.
 - 📝 **AI Rendering**: Frontend enhanced with [Marked.js](https://marked.js.org/) for beautiful AI-generated content display
 
 ---
+---
 
 <div align="center">
-  <strong>Made with ❤️ for Engineering Team!</strong>
+
+**Mukesh Rajput** · [LinkedIn](https://www.linkedin.com/in/mukesh-rajput/) · [Portfolio](https://msr5464.github.io/)
+
+<sub>Made with ❤️ for the Engineering Team</sub>
+
 </div>
+
+---
+---
