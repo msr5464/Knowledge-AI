@@ -3,7 +3,7 @@
 **🤖 AI-Powered Document Intelligence | LLM-Driven Q&A | RAG Technology | Knowledge Hub ~ QnA with Documents**
 
 [![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
 
 ---
 
@@ -419,7 +419,7 @@ For detailed contribution guidelines, see [documentation/CONTRIBUTING.md](docume
 
 ## 📝 License
 
-This project is open source. See [LICENSE](LICENSE) file for details.
+Apache 2.0 (see [LICENSE](LICENSE))
 
 ---
 
